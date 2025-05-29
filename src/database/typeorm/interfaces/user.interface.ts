@@ -1,5 +1,5 @@
-import { IBaseRepository } from '../../database/typeorm/base.interface';
-import { User } from '../../database/typeorm/entities/user.entity';
+import { User } from '../entities/user.entity';
+import { IBaseRepository } from '../base.interface';
 
 export interface IUserRepository extends IBaseRepository<User> {
   findByEmail(email: string): Promise<User | null>;

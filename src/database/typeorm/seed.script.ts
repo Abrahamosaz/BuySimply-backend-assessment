@@ -1,10 +1,11 @@
 import { DataSource } from 'typeorm';
-import databaseConfig from './database.config';
+
 import { MainSeeder } from './seeders/main.seeder';
+import typeormConfig from '../../config/typeorm.config';
 
 async function seed() {
   const dataSource = new DataSource({
-    ...databaseConfig(),
+    ...typeormConfig(),
     type: 'postgres',
     synchronize: process.env.NODE_ENV === 'development',
   });

@@ -9,9 +9,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { TaskModule } from './task/task.module';
-import { DatabaseModule } from './database/database.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import databaseConfig from './database/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,13 +17,14 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventModule } from './event/event.module';
 import { ApiKeyMiddleware } from './middleware/apiKeyMiddleware';
 import { JwtMiddleware } from './middleware/jwtMiddleware';
+import typeormConfig from './config/typeorm.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', '.env.example'],
-      load: [databaseConfig],
+      load: [typeormConfig],
       validationSchema: Joi.object({
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.number().required(),
@@ -53,7 +52,6 @@ import { JwtMiddleware } from './middleware/jwtMiddleware';
     AuthModule,
     UserModule,
     TaskModule,
-    DatabaseModule,
     EventModule,
   ],
   controllers: [AppController],

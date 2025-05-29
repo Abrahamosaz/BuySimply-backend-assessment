@@ -18,7 +18,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserRole } from '../database/entities/user.entity';
+import { UserRole } from '../database/typeorm/entities/user.entity';
 
 @ApiTags('User')
 @Controller('user')
