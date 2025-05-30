@@ -3,13 +3,9 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import {
-  ApiCookieAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiSecurity,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiLoginResponse } from '../common/decorators/swagger-doc/auth/login.decorator';
+import { ApiLogoutResponse } from '../common/decorators/swagger-doc/auth/logout.decorator';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -20,23 +16,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  @ApiOperation({ summary: 'User login' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Login successful',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', example: 'Login successful' },
-        statusCode: { type: 'number', example: 200 },
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid credentials',
-  })
-  @ApiSecurity('x-api-key')
+  @ApiLoginResponse()
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -54,20 +34,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @ApiOperation({ summary: 'User logout' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Logout successful',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', example: 'Logout successful' },
-        statusCode: { type: 'number', example: 200 },
-      },
-    },
-  })
-  @ApiSecurity('x-api-key')
-  @ApiCookieAuth('access_token')
+  @ApiLogoutResponse()
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
     return { message: 'Logout successful', StatusCode: HttpStatus.OK };

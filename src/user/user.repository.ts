@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { IUserRepository } from './interfaces/user.interface';
 import { User } from '../database/typeorm/entities/user.entity';
 import { BaseRepository } from '../database/typeorm/base.repository';
@@ -23,5 +23,11 @@ export class UserRepository
 
   async findActiveUsers(): Promise<User[]> {
     return this.find({ isActive: true } as any);
+  }
+
+  async findAndCount(
+    options: FindManyOptions<User>,
+  ): Promise<[User[], number]> {
+    return this.userRepository.findAndCount(options);
   }
 }

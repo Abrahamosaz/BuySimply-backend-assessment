@@ -2,23 +2,24 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
+  Query,
+  ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Roles } from '../common/decorators/role.decorator';
-import { RoleGuard } from '../common/guards/role.guard';
 import { CreateUserDto } from './dtos/createUser.dto';
-import {
-  ApiCookieAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiSecurity,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { UserRole } from '../database/typeorm/entities/user.entity';
+import { PaginationDto } from '../common/dtos/pagination.dto';
+import { ApiPaginatedUserAdminResponse } from '../common/decorators/swagger-doc/user/adminGetAllUserPagination.decorator';
+import { ApiUserByIdResponse } from '../common/decorators/swagger-doc/user/userGetById.decorator';
+import { ApiAdminCreateUserResponse } from '../common/decorators/swagger-doc/user/adminCreateUser.decorator';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @ApiTags('User')
 @Controller('user')
@@ -26,36 +27,24 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Fetch all the users' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Users fetched successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', example: 'Users fetched successfully' },
-        statusCode: { type: 'number', example: 200 },
-      },
-    },
-  })
-  @ApiSecurity('x-api-key')
-  @ApiCookieAuth('access_token')
+  @ApiPaginatedUserAdminResponse()
   @Roles([UserRole.ADMIN])
-  async getUsers() {
-    return this.userService.getUsers();
+  @UseGuards(RoleGuard)
+  async getUsers(@Query() paginationDto: PaginationDto) {
+    return this.userService.getUsers(paginationDto);
   }
 
   @Get(':id')
-  @ApiSecurity('x-api-key')
-  @ApiCookieAuth('access_token')
-  async getUser(@Param('id') id: string) {
+  @ApiUserByIdResponse()
+  async getUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.getUser(id);
   }
 
   @Post()
+  @ApiAdminCreateUserResponse()
   @Roles([UserRole.ADMIN])
-  @ApiSecurity('x-api-key')
-  @ApiCookieAuth('access_token')
+  @UseGuards(RoleGuard)
+  @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }

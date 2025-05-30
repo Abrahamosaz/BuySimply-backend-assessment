@@ -14,9 +14,14 @@ services:
       - DB_PASSWORD=abraham
       - DB_NAME=task_management
       - NODE_ENV=development
-      - API_KEY="api_key"
-      - JWT_SECRET="jwt_secret"
-      - JWT_EXPIRES_IN="expires_time"
+      - API_KEY=api_key
+      - JWT_SECRET=jwt_secret
+      - JWT_EXPIRES_IN=expires_time
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_USER=your_email@gmail.com
+      - SMTP_PASS=your_password
+      - SMTP_FROM=your_email@gmail.com
     restart: always
     deploy:
       mode: replicated

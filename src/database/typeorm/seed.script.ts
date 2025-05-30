@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 
 import { MainSeeder } from './seeders/main.seeder';
-import typeormConfig from '../../config/typeorm.config';
+import typeormConfig from '../../common/config/typeorm.config';
 
 async function seed() {
   const dataSource = new DataSource({

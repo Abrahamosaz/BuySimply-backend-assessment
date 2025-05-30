@@ -27,7 +27,14 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 # Copy built application from builder stage
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/build ./build
 
-# Start the application
-CMD ["node", "dist/main"]
+# Create a startup script with proper line endings and permissions
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'npm run migration:run' >> /app/start.sh && \
+    echo 'npm run seed' >> /app/start.sh && \
+    echo 'node build/main' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+# Start the application using the startup script
+CMD ["/app/start.sh"]

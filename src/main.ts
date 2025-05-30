@@ -3,15 +3,28 @@ import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Enable cookie parser
+  app.use(cookieParser());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Strip properties that don't have decorators
+      transform: true, // Transform payloads to DTO instances
+      forbidNonWhitelisted: true, // Throw errors if non-whitelisted properties are present
+    }),
+  );
+
   // Enable CORS
   app.enableCors({
     origin: [
+      //add the urls that are allowed to access the api
       'http://localhost:3000',
-      'https://frontend-production-0bfc.up.railway.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,

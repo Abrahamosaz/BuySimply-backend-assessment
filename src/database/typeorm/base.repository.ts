@@ -1,4 +1,9 @@
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOptionsWhere,
+  FindManyOptions,
+  Repository,
+} from 'typeorm';
 import { IBaseRepository } from './base.interface';
 
 export abstract class BaseRepository<T> implements IBaseRepository<T> {
@@ -32,5 +37,9 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
 
   async save(data: DeepPartial<T>): Promise<T> {
     return this.repository.save(data);
+  }
+
+  async findAndCount(options: FindManyOptions<T>): Promise<[T[], number]> {
+    return this.repository.findAndCount(options);
   }
 }

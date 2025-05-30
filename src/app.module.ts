@@ -14,10 +14,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { JwtModule } from '@nestjs/jwt';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { EventModule } from './event/event.module';
 import { ApiKeyMiddleware } from './middleware/apiKeyMiddleware';
 import { JwtMiddleware } from './middleware/jwtMiddleware';
-import typeormConfig from './config/typeorm.config';
+import typeormConfig from './common/config/typeorm.config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { resolve } from 'path';
 
 @Module({
   imports: [
@@ -48,11 +50,35 @@ import typeormConfig from './config/typeorm.config';
       }),
       inject: [ConfigService],
     }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('SMTP_HOST'),
+          port: configService.get<number>('SMTP_PORT'),
+          secure: true, // true for 465, false for other ports
+          auth: {
+            user: configService.get<string>('SMTP_USER'),
+            pass: configService.get<string>('SMTP_PASS'),
+          },
+        },
+        defaults: {
+          from: configService.get<string>('SMTP_FROM'),
+        },
+        template: {
+          dir: resolve('./src/common/templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
     EventEmitterModule.forRoot(),
     AuthModule,
     UserModule,
     TaskModule,
-    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],

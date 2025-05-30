@@ -32,10 +32,10 @@ export class Task {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', nullable: true })
   assignedTo: string;
 
-  @Column({ type: 'enum', enum: TaskStatus })
+  @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.TODO })
   status: TaskStatus;
 
   @Column({ type: 'enum', enum: Priority })

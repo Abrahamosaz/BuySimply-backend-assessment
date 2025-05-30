@@ -5,10 +5,11 @@ import { TasksRepository } from './tast.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleGuard } from '../common/guards/role.guard';
 import { Task } from '../database/typeorm/entities/task.entity';
+import { EmailService } from '../common/services/email.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Task])],
   controllers: [TaskController],
-  providers: [TaskService, RoleGuard, TasksRepository],
+  providers: [TaskService, RoleGuard, TasksRepository, EmailService],
 })
 export class TaskModule {}
