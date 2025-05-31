@@ -13,6 +13,9 @@ import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiLoginResponse } from '../common/decorators/swagger-doc/auth/login.decorator';
 import { ApiLogoutResponse } from '../common/decorators/swagger-doc/auth/logout.decorator';
+import { UserSerializer } from '../user/user.serializer';
+import { plainToInstance } from 'class-transformer';
+import { User } from '../database/typeorm/entities/user.entity';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -38,10 +41,14 @@ export class AuthController {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
+    const serializedUser = plainToInstance(UserSerializer, User, {
+      excludeExtraneousValues: true,
+    });
+
     return {
       message: 'Login successful',
       statusCode: HttpStatus.OK,
-      data: user,
+      data: serializedUser,
     };
   }
 
