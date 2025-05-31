@@ -62,6 +62,13 @@ describe('AuthController', () => {
       user: {
         id: 1,
         email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'user',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        tasks: 0,
       },
     };
 
@@ -85,7 +92,15 @@ describe('AuthController', () => {
       expect(result).toEqual({
         message: 'Login successful',
         statusCode: 200,
-        data: mockLoginResponse.user,
+        data: expect.objectContaining({
+          id: mockLoginResponse.user.id,
+          email: mockLoginResponse.user.email,
+          firstName: mockLoginResponse.user.firstName,
+          lastName: mockLoginResponse.user.lastName,
+          role: mockLoginResponse.user.role,
+          isActive: mockLoginResponse.user.isActive,
+          tasks: 0,
+        }),
       });
     });
 

@@ -57,7 +57,7 @@ describe('TaskController', () => {
   });
 
   describe('createTask', () => {
-    it('should call service.createTask with dto and user', async () => {
+    it('should call service.createTask with dto', async () => {
       const createTaskDto: CreateTaskDto = {
         title: 'New Task',
         description: 'desc',
@@ -70,7 +70,7 @@ describe('TaskController', () => {
       mockTaskService.createTask.mockResolvedValue(result);
 
       expect(await controller.createTask(createTaskDto, req)).toBe(result);
-      expect(service.createTask).toHaveBeenCalledWith(createTaskDto, user);
+      expect(service.createTask).toHaveBeenCalledWith(createTaskDto);
     });
   });
 
