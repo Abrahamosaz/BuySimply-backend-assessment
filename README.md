@@ -8,7 +8,9 @@ A backend service built with [NestJS](https://nestjs.com/) for the Task Manageme
 
 Hosted Url - [https://task-management-production-c460.up.railway.app](https://task-management-production-c460.up.railway.app)
 
-Swagger doc - [https://task-management-production-c460.up.railway.app/api/swagger](https://task-management-production-c460.up.railway.app/api/swagger)
+Swagger doc - [https://task-management-production-c460.up.railway.app/swagger/api](https://task-management-production-c460.up.railway.app/swagger/api)
+
+Swagger json spec - [https://task-management-production-c460.up.railway.app/swagger/api-json](https://task-management-production-c460.up.railway.app/swagger/api-json)
 
 API_KEY - 1255244323747377435634343
 
