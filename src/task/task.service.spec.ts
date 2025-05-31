@@ -4,6 +4,7 @@ import { TasksRepository } from './tast.repository';
 import { NotFoundException, HttpStatus } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { TaskSerializer } from './task.serializer';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 const mockTasksRepository = () => ({
   findAndCount: jest.fn(),
@@ -13,20 +14,27 @@ const mockTasksRepository = () => ({
   delete: jest.fn(),
 });
 
+const mockEventEmitter = () => ({
+  emitAsync: jest.fn(),
+});
+
 describe('TaskService', () => {
   let service: TaskService;
   let tasksRepository: ReturnType<typeof mockTasksRepository>;
+  let eventEmitter: ReturnType<typeof mockEventEmitter>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TaskService,
         { provide: TasksRepository, useFactory: mockTasksRepository },
+        { provide: EventEmitter2, useFactory: mockEventEmitter },
       ],
     }).compile();
 
     service = module.get<TaskService>(TaskService);
     tasksRepository = module.get<TasksRepository>(TasksRepository) as any;
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2) as any;
   });
 
   it('should be defined', () => {
@@ -94,6 +102,46 @@ describe('TaskService', () => {
       tasksRepository.findOne.mockResolvedValue(null);
       await expect(service.updateTask('1', {} as any)).rejects.toThrow(
         NotFoundException,
+      );
+    });
+
+    it('should validate assigned user exists', async () => {
+      const id = '1';
+      const dto = { assignedTo: 'user123' };
+      const task = { id, title: 'Old' };
+      tasksRepository.findOne.mockResolvedValue(task);
+      eventEmitter.emitAsync.mockResolvedValue([null]);
+
+      await expect(service.updateTask(id, dto as any)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(eventEmitter.emitAsync).toHaveBeenCalledWith(
+        'user.getById',
+        'user123',
+      );
+    });
+
+    it('should proceed with update when assigned user exists', async () => {
+      const id = '1';
+      const dto = { assignedTo: 'user123' };
+      const task = { id, title: 'Old' };
+      const updatedTask = { id, ...dto };
+      const user = { id: 'user123', name: 'Test User' };
+
+      tasksRepository.findOne.mockResolvedValue(task);
+      eventEmitter.emitAsync.mockResolvedValue([user]);
+      tasksRepository.update.mockResolvedValue(updatedTask);
+
+      const result = await service.updateTask(id, dto as any);
+      expect(result.statusCode).toBe(HttpStatus.OK);
+      expect(result.data).toEqual(
+        plainToInstance(TaskSerializer, updatedTask, {
+          excludeExtraneousValues: true,
+        }),
+      );
+      expect(eventEmitter.emitAsync).toHaveBeenCalledWith(
+        'user.getById',
+        'user123',
       );
     });
   });
