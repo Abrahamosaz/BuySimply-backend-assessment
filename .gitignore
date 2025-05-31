@@ -7,3 +7,4 @@ temp/
 docker-compose.yml
 .env
 db-data/
+coverage/

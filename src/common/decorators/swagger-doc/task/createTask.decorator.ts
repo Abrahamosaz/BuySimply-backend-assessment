@@ -25,6 +25,9 @@ export function ApiCreateTaskResponse() {
                 type: 'string',
                 enum: ['todo', 'in_progress', 'completed'],
               },
+              assignedTo: {
+                type: 'object',
+              },
               createdAt: { type: 'string', format: 'date' },
               updatedAt: { type: 'string', format: 'date' },
             },

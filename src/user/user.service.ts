@@ -134,4 +134,19 @@ export class UserService {
       await queryRunner.release();
     }
   }
+
+  async deleteUser(id: string) {
+    const user = await this.userRepository.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.userRepository.delete(id);
+
+    return {
+      message: 'User deleted successfully',
+      statusCode: HttpStatus.OK,
+    };
+  }
 }

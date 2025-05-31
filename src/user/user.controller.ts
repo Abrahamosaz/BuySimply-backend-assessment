@@ -9,6 +9,7 @@ import {
   Query,
   ParseUUIDPipe,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Roles } from '../common/decorators/role.decorator';
@@ -47,5 +48,12 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
+  }
+
+  @Delete(':id')
+  @Roles([UserRole.ADMIN])
+  @UseGuards(RoleGuard)
+  async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.deleteUser(id);
   }
 }

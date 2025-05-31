@@ -4,6 +4,7 @@ import {
   Task,
   TaskStatus,
 } from '../database/typeorm/entities/task.entity';
+import { User } from '../database/typeorm/entities/user.entity';
 
 export class TaskSerializer {
   @Expose()
@@ -21,8 +22,8 @@ export class TaskSerializer {
   @Expose()
   priority: Priority;
 
-  @Exclude()
-  assignedTo: string;
+  @Expose()
+  assignedTo: User;
 
   @Expose()
   status: TaskStatus;

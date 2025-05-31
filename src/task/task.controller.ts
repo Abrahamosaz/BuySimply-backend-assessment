@@ -29,7 +29,7 @@ import { ApiDeleteTaskResponse } from '../common/decorators/swagger-doc/task/del
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Get('')
+  @Get()
   @ApiPaginatedTaskResponse()
   async getTasks(@Query() paginationDto: PaginationDto) {
     return this.taskService.getTasks(paginationDto);

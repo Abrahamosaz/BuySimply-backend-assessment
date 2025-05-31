@@ -45,6 +45,6 @@ export class User {
   updatedAt: Date;
 
   //relationship definations
-  @OneToMany(() => Task, (task) => task.assignedUser)
+  @OneToMany(() => Task, (task) => task.assignedUser, { onDelete: 'CASCADE' })
   tasks: Task[];
 }

@@ -32,7 +32,8 @@ export class JwtMiddleware implements NestMiddleware {
   }
 
   async verifyPayloadId(id: string) {
-    const user = await this.userService.getUser(id);
+    const response = await this.userService.getUser(id);
+    const user = response.data;
 
     if (!user) {
       throw new UnauthorizedException('User not found');

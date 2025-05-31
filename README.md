@@ -6,6 +6,12 @@
 
 A backend service built with [NestJS](https://nestjs.com/) for the Task Management Assessment API.
 
+Hosted Url - [https://task-management-production-c460.up.railway.app](https://task-management-production-c460.up.railway.app)
+
+Swagger doc - [https://task-management-production-c460.up.railway.app/api/swagger](https://task-management-production-c460.up.railway.app/api/swagger)
+
+API_KEY - 1255244323747377435634343
+
 ---
 
 ## Project Setup
@@ -13,8 +19,8 @@ A backend service built with [NestJS](https://nestjs.com/) for the Task Manageme
 Clone the repository and install dependencies:
 
 ```bash
-git clone <repo-url>
-cd buy-simply-backend-assessment
+git clone https://github.com/Abrahamosaz/BuySimply-backend-assessment
+cd BuySimply-backend-assessment
 npm install
 ```
 
@@ -29,10 +35,19 @@ npm install
 **Typical variables:**
 
 ```
-NODE_ENV=development
-PORT=3000
-DATABASE_URL=postgres://user:password@localhost:5432/buy_simply
-JWT_SECRET=your_jwt_secret
+DB_HOST="host_address"
+DB_PORT="host_port"
+DB_USERNAME="username"
+DB_NAME="database_name"
+NODE_ENV="environment e.g (development, production)"
+JWT_SECRET=jwt_secret
+JWT_EXPIRES_IN=expires_in
+API_KEY="1255244323747377435634343"
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=username
+SMTP_PASS=password
+SMTP_FROM='Task Manager <username>'
 ```
 
 ## Database Setup & Migration
@@ -86,7 +101,7 @@ npm run test:cov
   ```bash
   npm run start:prod
   ```
-- For cloud deployment, see [NestJS deployment docs](https://docs.nestjs.com/deployment) or use [Mau](https://mau.nestjs.com) for AWS.
+- For cloud deployment, see [NestJS deployment docs](https://docs.nestjs.com/deployment) or use [Railway](https://railway.app) for easy deployment and hosting.
 
 ## Architecture Decisions
 

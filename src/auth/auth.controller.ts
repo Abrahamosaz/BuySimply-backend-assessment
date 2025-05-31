@@ -1,4 +1,11 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { Response } from 'express';
@@ -17,11 +24,12 @@ export class AuthController {
 
   @Post('login')
   @ApiLoginResponse()
+  @HttpCode(HttpStatus.OK)
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { access_token } = await this.authService.login(loginDto);
+    const { access_token, user } = await this.authService.login(loginDto);
 
     res.cookie('access_token', access_token, {
       httpOnly: true,
@@ -30,11 +38,16 @@ export class AuthController {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    return { message: 'Login successful', statusCode: HttpStatus.OK };
+    return {
+      message: 'Login successful',
+      statusCode: HttpStatus.OK,
+      data: user,
+    };
   }
 
   @Post('logout')
   @ApiLogoutResponse()
+  @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
     return { message: 'Logout successful', StatusCode: HttpStatus.OK };
