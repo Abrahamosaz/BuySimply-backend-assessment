@@ -16,6 +16,20 @@ API_KEY - 1255244323747377435634343
 
 ---
 
+## Login Credentials
+
+### Admin Access
+
+- **Email:** admin@example.com
+- **Password:** admin123
+
+### Regular User Access
+
+- **Email:** user@example.com
+- **Password:** user123
+
+---
+
 ## Project Setup
 
 Clone the repository and install dependencies:
