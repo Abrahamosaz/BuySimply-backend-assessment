@@ -120,10 +120,14 @@ export class UserService {
         this.logger.error('Error sending welcome email', error);
       }
 
+      const serializedUser = plainToInstance(UserSerializer, newUser, {
+        excludeExtraneousValues: true,
+      });
+
       return {
         message: 'User created successfully',
         statusCode: HttpStatus.CREATED,
-        data: newUser,
+        data: serializedUser,
       };
     } catch (error) {
       // Rollback the transaction in case of error

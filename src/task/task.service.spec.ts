@@ -61,10 +61,9 @@ describe('TaskService', () => {
   describe('createTask', () => {
     it('should create and serialize a task', async () => {
       const dto = { title: 'Test' };
-      const user = { id: 1 };
       const task = { id: 1, ...dto };
       tasksRepository.create.mockResolvedValue(task);
-      const result = await service.createTask(dto as any, user as any);
+      const result = await service.createTask(dto as any);
       expect(result.statusCode).toBe(HttpStatus.CREATED);
       expect(result.data).toEqual(
         plainToInstance(TaskSerializer, task, {

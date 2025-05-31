@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleGuard } from '../common/guards/role.guard';
 import { Task } from '../database/typeorm/entities/task.entity';
 import { EmailService } from '../common/services/email.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task])],
+  imports: [TypeOrmModule.forFeature([Task]), EventEmitterModule.forRoot()],
   controllers: [TaskController],
   providers: [TaskService, RoleGuard, TasksRepository, EmailService],
 })

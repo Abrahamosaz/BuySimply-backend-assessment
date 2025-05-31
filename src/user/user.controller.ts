@@ -21,6 +21,7 @@ import { ApiPaginatedUserAdminResponse } from '../common/decorators/swagger-doc/
 import { ApiUserByIdResponse } from '../common/decorators/swagger-doc/user/userGetById.decorator';
 import { ApiAdminCreateUserResponse } from '../common/decorators/swagger-doc/user/adminCreateUser.decorator';
 import { RoleGuard } from '../common/guards/role.guard';
+import { ApiDeleteUserResponse } from '../common/decorators/swagger-doc/user/deleteUser.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -53,6 +54,7 @@ export class UserController {
   @Delete(':id')
   @Roles([UserRole.ADMIN])
   @UseGuards(RoleGuard)
+  @ApiDeleteUserResponse()
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.deleteUser(id);
   }

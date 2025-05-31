@@ -45,8 +45,7 @@ export class TaskController {
   @ApiCreateTaskResponse()
   @HttpCode(HttpStatus.CREATED)
   async createTask(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
-    const user = req['user'];
-    return this.taskService.createTask(createTaskDto, user);
+    return this.taskService.createTask(createTaskDto);
   }
 
   @Patch(':id')

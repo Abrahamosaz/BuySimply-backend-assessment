@@ -3,17 +3,23 @@ import { LoginDto } from './dtos/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userService: UserService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async login(loginDto: LoginDto) {
     // check if that user is registered on the database
-    const user = await this.userService.findByEmail(loginDto.email);
+    const response = await this.eventEmitter.emitAsync(
+      'user.getByEmail',
+      loginDto.email,
+    );
+
+    const user = response?.[0];
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

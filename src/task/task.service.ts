@@ -7,16 +7,20 @@ import {
 import { TasksRepository } from './tast.repository';
 import { UpdateTaskDto } from './dtos/updateTask.dto';
 import { CreateTaskDto } from './dtos/createTask.dto';
-import { User } from '../database/typeorm/entities/user.entity';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { plainToInstance } from 'class-transformer';
 import { TaskSerializer } from './task.serializer';
+import { UserService } from '../user/user.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TaskService {
   private readonly logger = new Logger(TaskService.name);
 
-  constructor(private readonly tasksRepository: TasksRepository) {}
+  constructor(
+    private readonly tasksRepository: TasksRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async getTasks(paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
@@ -62,7 +66,7 @@ export class TaskService {
     };
   }
 
-  async createTask(createTaskDto: CreateTaskDto, user: User) {
+  async createTask(createTaskDto: CreateTaskDto) {
     // create task
     const task = await this.tasksRepository.create(createTaskDto);
 
@@ -82,6 +86,19 @@ export class TaskService {
     const task = await this.tasksRepository.findOne(id);
     if (!task) {
       throw new NotFoundException('Task with id does not exist');
+    }
+
+    if (updateTaskDto.assignedTo) {
+      const response = await this.eventEmitter.emitAsync(
+        'user.getById',
+        updateTaskDto.assignedTo,
+      );
+
+      const user = response?.[0];
+
+      if (!user) {
+        throw new NotFoundException('Assigned user does not exist');
+      }
     }
 
     // update the task

@@ -41,7 +41,7 @@ export class AuthController {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    const serializedUser = plainToInstance(UserSerializer, User, {
+    const serializedUser = plainToInstance(UserSerializer, user, {
       excludeExtraneousValues: true,
     });
 
